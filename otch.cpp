@@ -11,6 +11,8 @@
 #include <cstdlib>
 using namespace std;
 
+int main(){};
+
 int Zotch(){
 
   //Получаем дату в нужном формате и выводим её в двух видах

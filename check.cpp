@@ -16,6 +16,42 @@ using namespace std;
  @author: Vladislav Sventik
  */
 
+
+char* convert(const char* s, const char* from_cp, const char* to_cp)
+{
+  iconv_t ic = iconv_open(to_cp, from_cp);
+
+  if (ic == (iconv_t)(-1)) {
+    fprintf(stderr, "iconv: cannot convert from %s to %s\n", from_cp, to_cp);
+    return "";
+  }
+
+  char* out_buf = (char*)calloc(strlen(s)+1, 1);
+  char* out = out_buf;
+  char* in = (char*)malloc(strlen(s)+1);
+  strcpy(in, s);
+
+  size_t in_ln = strlen(s);
+  size_t out_ln = in_ln;
+  size_t k = iconv(ic, &in, &in_ln, &out, &out_ln);
+  if(k == (size_t)-1)
+    fprintf(stderr, "iconv: %u of %d converted\n", k, strlen(s));
+
+  if(errno != 0)
+    fprintf(stderr, "iconv: %s\n", strerror(errno));
+
+  iconv_close(ic);
+
+  return out_buf;
+}
+
+
+
+
+
+
+
+
 int main(){
   setlocale(LC_ALL,"ru_RU.1251");
 
@@ -134,38 +170,6 @@ int main(){
   hw->ECR_CloseConnection();
   return 1;
 }
-
-
-
-char* convert(const char* s, const char* from_cp, const char* to_cp)
-{
-  iconv_t ic = iconv_open(to_cp, from_cp);
-
-  if (ic == (iconv_t)(-1)) {
-    fprintf(stderr, "iconv: cannot convert from %s to %s\n", from_cp, to_cp);
-    return "";
-  }
-
-  char* out_buf = (char*)calloc(strlen(s)+1, 1);
-  char* out = out_buf;
-  char* in = (char*)malloc(strlen(s)+1);
-  strcpy(in, s);
-
-  size_t in_ln = strlen(s);
-  size_t out_ln = in_ln;
-  size_t k = iconv(ic, &in, &in_ln, &out, &out_ln);
-  if(k == (size_t)-1)
-    fprintf(stderr, "iconv: %u of %d converted\n", k, strlen(s));
-
-  if(errno != 0)
-    fprintf(stderr, "iconv: %s\n", strerror(errno));
-
-  iconv_close(ic);
-
-  return out_buf;
-}
-
-
 
 
 
