@@ -7,6 +7,7 @@
 #include <locale.h>
 #include "/usr/local/include/hwsrv.h"
 #include "otch.h"
+#include "error-list.cpp"
 #include <cerrno>
 #include <fstream>
 #include <cstring>
@@ -61,11 +62,18 @@ int main(){
   int CMode = hw->ECR_ReadCurrentMode();
   printf("Current Mode = %d \n",CMode);
 
+
+
+
   int ecr_setmode = hw->ECR_SetMode(0,"");
   printf("ecr_setmode = %d \n", ecr_setmode);
 
   ecr_setmode = hw->ECR_SetMode(1,"");
   printf("ecr_setmode = %d \n", ecr_setmode);
+
+  ecr_setmode = hw->ECR_SetMode(2,"");
+  string err =  getErrText(ecr_setmode);
+  std::cout<<"ERRRRRR   " << err<< std::endl;
 
   /* Строка "Чек:Номер"*/
   //int lineLenght = hw->ECR_GetCharLineLength();
@@ -85,13 +93,13 @@ int main(){
 
   int checkN = hw->ECR_GetCheckNumber();
   printf("checkN = %d \n",checkN);
-  ifstream file("log.txt"); 
+  ifstream file("check.txt"); 
   int str = 0;
   while( !file.eof() ) if( file.get() == '\n' ) str++; //Считаем кол-во строк в файле
   file.close(); 
 
   char buff[200]; // Буфер промежуточного хранения считываемого из файла текста
-  ifstream fin("log.txt"); 
+  ifstream fin("check.txt"); 
   double nalichka = 0.0;
   double card = 0.0;
   if (!fin.is_open()) cout << "Файл не может быть открыт!\n";   
