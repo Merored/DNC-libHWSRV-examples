@@ -55,29 +55,36 @@ char* convert(const char* s, const char* from_cp, const char* to_cp)
 
 int main(){
   setlocale(LC_ALL,"ru_RU.1251");
+  std::locale current_locale("");
+  std::locale::global(current_locale);
+  std::wcout.imbue(current_locale);
 
   int i;
+  char* error;
   HWSRV *hw = new HWSRV();
 
   int CMode = hw->ECR_ReadCurrentMode();
-  printf("Current Mode = %d \n",CMode);
+  error = getErrText(CMode);
+  printf("Current Mode = %s \n",error);
 
 
 
 
   int ecr_setmode = hw->ECR_SetMode(0,"");
-  printf("ecr_setmode = %d \n", ecr_setmode);
+  error = getErrText(ecr_setmode);
+  printf("ecr_setmode = %s \n", error);
 
   ecr_setmode = hw->ECR_SetMode(1,"");
-  printf("ecr_setmode = %d \n", ecr_setmode);
+  error = getErrText(ecr_setmode);
+  printf("ecr_setmode = %s \n", error);
 
-  ecr_setmode = hw->ECR_SetMode(2,"");
-  string err =  getErrText(ecr_setmode);
-  std::cout<<"ERRRRRR   " << err<< std::endl;
+
+
+
 
   /* Строка "Чек:Номер"*/
   //int lineLenght = hw->ECR_GetCharLineLength();
-  //printf("lineLenght = %d \n", lineLenght);
+  //printf("lineLenght = %s \n", lineLenght);
   //char check[20] = "Чек: ";
   //char* check_number = "3514"; 
   //strcat(check,check_number);
@@ -85,14 +92,16 @@ int main(){
 
   //printf("check = %s \n", check1);
   //int ecr_printstring_check = hw->ECR_PrintString(check1,false);
-  //printf("ecr_printstring_check = %d \n", ecr_printstring_check);
+  //printf("ecr_printstring_check = %s \n", ecr_printstring_check);
 
 
   int ecr_opencheck = hw->ECR_OpenCheck(0);
-  printf("ecr_opencheck = %d \n", ecr_opencheck);
+  error = getErrText(ecr_opencheck);
+  printf("ecr_opencheck = %s \n", error);
 
   int checkN = hw->ECR_GetCheckNumber();
-  printf("checkN = %d \n",checkN);
+  error = getErrText(checkN);
+  printf("ECR_GetCheckNumber = %s \n",error);
   ifstream file("check.txt"); 
   int str = 0;
   while( !file.eof() ) if( file.get() == '\n' ) str++; //Считаем кол-во строк в файле
@@ -135,10 +144,13 @@ int main(){
           }
         }
       ecr_printstring_tovar = hw->ECR_PrintString(name,false);
+      error = getErrText(ecr_printstring_tovar);
+      printf("ecr_printstring_tovar = %s \n", error);
       printf("summ = %d \n", summ);
-      printf("ecr_printstring_tovar = %d \n", ecr_printstring_tovar);
+      
       ecr_registration = hw->ECR_Registration(price,quantity,"s",1,1,0,0,0,false);
-      printf("ecr_registration = %d \n",  ecr_registration);
+      error = getErrText(ecr_registration);
+      printf("ecr_registration = %s \n",  error);
       }else{
         for(ptr = strtok(buff,";"); ptr != NULL; ptr = strtok(NULL,";"))
         {
@@ -150,7 +162,7 @@ int main(){
             }
             if (strstr(ptr,"Summ") != NULL){
                 paramsDat = 2; //В случае если обрабатывается парамтерт суммы
-	        printf("strstr(ptr,Summ) != NULL \n");
+	              printf("strstr(ptr,Summ) != NULL \n");
             }
 	    k=1;
           }else{
@@ -174,7 +186,8 @@ int main(){
 
 
   int ecr_closecheck = hw->ECR_CloseCheck(nalichka,0,card,0.0,0.0,0.00,false); 
-  printf("ecr_closecheck = %d \n", ecr_closecheck);
+  error = getErrText(ecr_closecheck);
+  printf("ecr_closecheck = %s \n", error);
   hw->ECR_CloseConnection();
   return 1;
 }
