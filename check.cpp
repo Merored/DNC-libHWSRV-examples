@@ -100,8 +100,7 @@ int main(){
   printf("ecr_opencheck = %s \n", error);
 
   int checkN = hw->ECR_GetCheckNumber();
-  error = getErrText(checkN);
-  printf("ECR_GetCheckNumber = %s \n",error);
+  printf("ECR_GetCheckNumber = %d \n",checkN);
   ifstream file("check.txt"); 
   int str = 0;
   while( !file.eof() ) if( file.get() == '\n' ) str++; //Считаем кол-во строк в файле

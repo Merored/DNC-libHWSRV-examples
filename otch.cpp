@@ -9,6 +9,7 @@
 #include "/usr/local/include/hwsrv.h"
 #include <ctime>
 #include <cstdlib>
+#include "error-list.cpp"
 using namespace std;
 
 
@@ -45,35 +46,25 @@ int Zotch(){
    */
 
   int CMode = hw->ECR_ReadCurrentMode(); //Проверяем текущий Mode
-  if (CMode != 0) {
-    fprintf(stderr, "ECR_ReadCurrentMode()  С ошибкой Код ошибки = %d \n", CMode);
-    exit(CMode);
-  }
+  error = getErrText(CMode);
+  printf("ECR_ReadCurrentMode = %s \n", error);
 
   int ecr_setmode = hw->ECR_SetMode(0,""); //Переходим в режим выбора Mode
-  if (ecr_setmode != 0) {
-    fprintf(stderr, "Ecr Setmode(0) (Перед Z-отчётом)  С ошибкой Код ошибки = %d \n", ecr_setmode);
-    exit(ecr_setmode);
-  }
+  error = getErrText(ecr_setmode);
+  printf("ECR_SetMode 0 = %s \n", error);
 
 
-  int ecr_setmode1 = hw->ECR_SetMode(3,""); //Переходим в режим Z-отчёт Mode
-  if (ecr_setmode1 != 0){
-    fprintf(stderr, "Ecr Setmode(3)  С ошибкой Код ошибки = %d \n", ecr_setmode1);
-    exit(ecr_setmode1);
-  }
+  ecr_setmode = hw->ECR_SetMode(3,""); //Переходим в режим Z-отчёт Mode
+  error = getErrText(ecr_setmode);
+  printf("ECR_SetMode 3  = %s \n", error);
 
   int zotch = hw->ECR_Report(1,day,month,year,0,0,0,hw->ECR_GetSession(),hw->ECR_GetEndSession()); //Выводим Z-отчёт 
-  if (zotch != 0){
-    fprintf(stderr, "При выводе Z-отчёта произошла ошибка Код ошибки = %d \n", zotch);
-    exit(zotch);
-  }
+  error = getErrText(zotch);
+  printf(" ECR_Report Z - otch  = %s \n", error);
 
-  int ecr_setmode2 = hw->ECR_SetMode(0,""); //Возвращаемся к режиму выбора дабы избежать конфликтов
-  if (ecr_setmode2 != 0){
-    fprintf(stderr, "Ecr Setmode(0) (После Z-отчёта)  С ошибкой Код ошибки = %d \n", ecr_setmode2);
-    exit(ecr_setmode2);
-  }
+  ecr_setmode = hw->ECR_SetMode(0,""); //Возвращаемся к режиму выбора дабы избежать конфликтов
+  error = getErrText(ecr_setmode);
+  printf("ECR_SetMode 0 = %s \n", error);
   delete hw;
   return 0;
 }
@@ -112,35 +103,26 @@ int Xotch(){
    */
 
   int CMode = hw->ECR_ReadCurrentMode(); //Проверяем текущий Mode
-  if (CMode != 0) {
-    fprintf(stderr, "ECR_ReadCurrentMode()  С ошибкой Код ошибки = %d \n", CMode);
-    exit(CMode);
-  }
+  error = getErrText(CMode);
+  printf("ECR_ReadCurrentMode = %s \n", error);
 
   int ecr_setmode = hw->ECR_SetMode(0,""); //Переходим в режим выбора Mode
-  if (ecr_setmode != 0) {
-    fprintf(stderr, "Ecr Setmode(0) (Перед X-отчётом)  С ошибкой Код ошибки = %d \n", ecr_setmode);
-    exit(ecr_setmode);
-  }
+  error = getErrText(ecr_setmode);
+  printf("ECR_SetMode 0 = %s \n", error);
 
 
-  int ecr_setmode1 = hw->ECR_SetMode(2,""); //Переходим в режим X-отчёт Mode
-  if (ecr_setmode1 != 0){
-    fprintf(stderr, "Ecr Setmode(2)  С ошибкой Код ошибки = %d \n", ecr_setmode1);
-    exit(ecr_setmode1);
-  }
+  ecr_setmode = hw->ECR_SetMode(2,""); //Переходим в режим X-отчёт Mode
+  error = getErrText(ecr_setmode);
+  printf("ECR_SetMode 2 = %s \n", error);
 
-  int zotch = hw->ECR_Report(2,day,month,year,0,0,0,hw->ECR_GetSession(),hw->ECR_GetEndSession()); //Выводим X-отчёт
-  if (zotch != 0){
-    fprintf(stderr, "При выводе X-отчёта произошла ошибка Код ошибки = %d \n", zotch);
-    exit(zotch);
-  }
+  int xotch = hw->ECR_Report(2,day,month,year,0,0,0,hw->ECR_GetSession(),hw->ECR_GetEndSession()); //Выводим X-отчёт
+  error = getErrText(xotch);
+  printf("ECR_Report X-отчёт = %s \n", error);
 
-  int ecr_setmode2 = hw->ECR_SetMode(0,""); //Возвращаемся к режиму выбора дабы избежать конфликтов
-  if (ecr_setmode2 != 0){
-    fprintf(stderr, "Ecr Setmode(0) (После X-отчёта)  С ошибкой Код ошибки = %d \n", ecr_setmode2);
-    exit(ecr_setmode2);
-  }
+
+  ecr_setmode = hw->ECR_SetMode(0,""); //Возвращаемся к режиму выбора дабы избежать конфликтов
+  error = getErrText(ecr_setmode);
+  printf("ECR_SetMode 0 = %s \n", error);
   delete hw;
   return 0;
 }
